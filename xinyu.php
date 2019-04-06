@@ -43,4 +43,5 @@ function xinyu_autopopulate_fields_values($field, $form){
     }
     return $field;
 }
+civicrm_initialize();
 xinyu_register_hooks();
