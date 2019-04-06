@@ -26,17 +26,17 @@ function xinyu_autopulate_fields_types(){
 function xinyu_autopopulate_fields_values($field, $form){
     if ( ! empty( $field['config']['auto'] ) ) {
         if($field['config']['auto_type'] == "xinyu_cases"){
-            $result = civicrm_api3( 'CaseContact', 'get', [
+            $result = civicrm_api3( 'Contact', 'get', [
                 'sequential' => 1,
-                'case_id.is_deleted' => 0,
-                'return' => ["case_id.subject", "case_id.id", "contact_id.display_name"]
+                'group' => '深圳中小学',
+                'return' => ["contact_id", "display_name"]
             ] ); 
             $index = 0;
-            foreach($result['values'] as $case){
+            foreach($result['values'] as $contact){
                 $result_activity = civicrm_api3('Activity', 'get',[
                    'sequential' => 1,
                     'return' => ['subject', 'activity_date_time', 'details', 'assignee_contact_id'],
-                    'case_id' => $case['case_id.id'],
+                    'target_contact_id' => intval($contact['contact_id']),
                     'activity_type_id' => ['!=' => 'Email']
                 ]);
                 foreach($result_activity['values'] as $activity){
@@ -48,7 +48,7 @@ function xinyu_autopopulate_fields_values($field, $form){
                         $label_msg .= trim($activity['details']); // already has html tag, e.g. <p>
                     }
                     $label_msg .= 'time: ' . $activity['activity_date_time'] . ';';
-                    $label_msg .= 'organizer: ' . $case['contact_id.display_name'];
+                    $label_msg .= 'organizer: ' . $contact['display_name'];
                     $field['config']['option'][$index] = [
                         'value' => $activity['id'],
                         'label' => $label_msg
