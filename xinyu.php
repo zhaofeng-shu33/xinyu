@@ -63,7 +63,7 @@ class xinyu{
     public function __construct() {
         $this->error_message = null;
         add_action('caldera_forms_submit_complete', [$this, 'add_assignee_to_activity'], 20);
-        add_filter('caldera_forms_ajax_return', [$this, 'report_error', 10, 2]);
+        add_filter('caldera_forms_ajax_return', [$this, 'report_error'], 10, 2);
     }
     public function report_error($out, $form){
         if($this->error_message != null){
@@ -105,7 +105,11 @@ class xinyu{
             return;
         }
         $contact_id = $result['values']['contact_id'];
-
+        $result = civicrm_api3('ActivityContact', 'create',[
+            'activity_id' => $activity_id,
+            'record_type_id' => 'Activity Assignees',
+            'contact_id' => $contact_id
+        ]); // no error handling and email sending
     }    
 }
 civicrm_initialize();
