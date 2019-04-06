@@ -16,5 +16,7 @@ For the post-processing part, we add a function to save the person to be assigne
 
 This repository is trying to solve this and hope this functionality can be merged to [caldera-forms-civicrm](https://github.com/mecachisenros/caldera-forms-civicrm) in the future.
 
-
+存在的问题：
+1. 表单不够灵活，很多参数 is fixed;
+1. 有增加、创建认领的功能，没有删除、更改认领的功能；
 
