@@ -35,10 +35,14 @@ function xinyu_autopopulate_fields_values($field, $form){
             foreach($result['values'] as $case){
                 $result_activity = civicrm_api3('Activity', 'get',[
                    'sequential' => 1,
-                    'return' => ['subject', 'activity_date_time', 'details'],
-                    'case_id' => $case['id']
+                    'return' => ['subject', 'activity_date_time', 'details', 'assignee_contact_id'],
+                    'case_id' => $case['id'],
+                    'activity_type_id' => ['!=' => 'Email']
                 ]);
                 foreach($result_activity['values'] as $activity){
+                    if(count($activity['assignee_contact_id'])>0){
+                        continue;
+                    }
                     $label_msg = $case['subject'] . '/' . $activity['subject'];
                     if(strlen($activity['details']) > 0){
                         $label_msg .= '/' . trim($activity['details']);
