@@ -33,11 +33,22 @@ function xinyu_autopopulate_fields_values($field, $form){
             ] ); 
             $index = 0;
             foreach($result['values'] as $case){
-                $field['config']['option'][$index] = [
-                    'value' => $case['id'],
-                    'label' => $case['subject']
-                ];
-                $index += 1;
+                $result_activity = civicrm_api3('Activity', 'get',[
+                   'sequential' => 1,
+                    'return' => ['subject', 'activity_date_time', 'details'],
+                    'case_id' => $case['id']
+                ]);
+                foreach($result_activity['values'] as $activity){
+                    $label_msg = $case['subject'] . '/' . $activity['subject'];
+                    if(strlen($activity['details']) > 0){
+                        $label_msg .= '/' . trim($activity['details']);
+                    }
+                    $field['config']['option'][$index] = [
+                        'value' => $activity['id'],
+                        'label' => $label_msg
+                    ];
+                    $index += 1;
+                }
             }
         }
     }
