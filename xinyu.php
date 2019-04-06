@@ -91,7 +91,7 @@ class xinyu{
             return;
         }
         //field data is activity id
-        $activity_id = Caldera_Forms::get_field_data($field_id, $form);
+        $activity_id_array = Caldera_Forms::get_field_data($field_id, $form);
         $email_field_data = Caldera_Forms::get_field_data($email_field_id, $form);
 
         $result = civicrm_api3('Contact', 'get',[
@@ -104,12 +104,17 @@ class xinyu{
             $this->error_message = 'Sign up first';
             return;
         }
-        $contact_id = $result['values']['contact_id'];
-        $result = civicrm_api3('ActivityContact', 'create',[
-            'activity_id' => $activity_id,
-            'record_type_id' => 'Activity Assignees',
-            'contact_id' => $contact_id
-        ]); // no error handling and email sending
+        $contact_id = $result['values'][0]['contact_id'];
+        if(gettype($activity_id_array) == 'string'){
+            $activity_id_array = [$activity_id_array];
+        }
+        foreach($activity_id_array as $activity_id){
+            $result = civicrm_api3('ActivityContact', 'create',[
+                'activity_id' => intval($activity_id),
+                'record_type_id' => 'Activity Assignees',
+                'contact_id' => intval($contact_id)
+            ]); // no error handling and email sending
+        }
     }    
 }
 civicrm_initialize();
