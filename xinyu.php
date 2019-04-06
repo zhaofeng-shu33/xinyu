@@ -37,7 +37,8 @@ function xinyu_autopopulate_fields_values($field, $form){
                    'sequential' => 1,
                     'return' => ['subject', 'activity_date_time', 'details', 'assignee_contact_id'],
                     'target_contact_id' => intval($contact['contact_id']),
-                    'activity_type_id' => ['!=' => 'Email']
+                    'activity_type_id' => ['!=' => 'Email'],
+                    'is_deleted' => 0
                 ]);
                 foreach($result_activity['values'] as $activity){
                     if(count($activity['assignee_contact_id'])>0){
